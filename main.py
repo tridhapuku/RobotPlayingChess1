@@ -36,14 +36,22 @@ TestCallFromSameFolder()
 #Human plays the move --> replies yes after playing on command-prompt
 
 
-#camera will take picture & process it to give difference 
-#Human movement -->ex: e2e4
+#loop till game is over --
+    #camera will take picture & process it to give difference 
+    #Human movement -->ex: e2e4
+    ---> def CVForChess(img1 , img2): 
+            return string e2e4
 
-#This movement ex-e2e4 is passed to chess engine --> 
-# chess engine predicts next move
+    #This movement ex-e2e4 is passed to chess engine --> 
+    # chess engine predicts next move
 
-#Based on next move: say, g7g6 --> 
-#robot translates g7g6 to robotic path 
+    #Based on next move: say, g7g6 --> 
+    #robot translates g7g6 to robotic path 
+    def RobotPlayMovement(string = "g7g6"):
+        movemnt
+        return str1 = done
 
-#camera takes image --> stores to use it for next movement processing 
-#prompt for human --> make next move
+
+
+    #camera takes image --> stores to use it for next movement processing 
+    #prompt for human --> make next move
