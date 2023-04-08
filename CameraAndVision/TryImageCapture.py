@@ -1,6 +1,12 @@
 import cv2 as cv2
 from matplotlib import pyplot as plt
 import numpy as np
+import os
+
+absolute_path = os.path.dirname(__file__)
+# relative_path = "CameraAndVision\Images"
+relative_path = "Images"
+full_path = os.path.join(absolute_path,relative_path)
 
 def TakeImageUsingOpenCV():
    
@@ -13,7 +19,7 @@ def TakeImageUsingOpenCV():
     ret, frame = cap.read()
 
     # save the captured image
-    cv2.imwrite("captured_image2.jpg", frame)
+    cv2.imwrite(full_path + "\captured_image2.jpg", frame)
 
     # release the camera
     cap.release()
@@ -122,7 +128,6 @@ def crop_chessboard(img, length):
         print("Chessboard not found.")
         return None
 
-import cv2
 
 def find_chessboard_pattern(image_path, min_size=3, max_size=10):
     """
@@ -164,7 +169,7 @@ def ReadAnImageAndFindChessCorners(img1):
     print(img1.shape)
     # cv2.imshow('image',cropped_img1)
     # cv2.waitKey(0)
-    # cv2.imwrite("img1_GrayScale.jpg",cropped_img1)
+    # cv2.imwrite(full_path + "\img1_GrayScale.jpg",cropped_img1)
     # exit()
     print(find_chessboard_pattern(pathImg1, 3))
 
@@ -172,13 +177,13 @@ def ReadAnImageAndFindChessCorners(img1):
     # exit()
     print("Calling functn-- to crop image to board_length")
     img1 = crop_chessboard(img1, 500)
-    cv2.imwrite("cropped_img1.jpg",img1)
+    cv2.imwrite(full_path + "\cropped_img1.jpg",img1)
 
 def ResizeImage(img1):
     height,width = img1.shape[:2]
     res = cv2.resize(img1, (int(width/4), int(height/4)), interpolation=cv2.INTER_AREA)
     cv2.imshow('image', res)
-    cv2.imwrite("resizedBy4_img1.jpg",res)
+    cv2.imwrite(full_path + "\\resizedBy4_img1a.jpg",res)
     # cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -189,7 +194,7 @@ def RotateImage(img):
     rotimg = cv2.warpAffine(img,mat,(h,w))
     cv2.imshow('original',img)
     cv2.imshow('rotated', rotimg)
-    cv2.imwrite("rotateBy90_img1.jpg",rotimg)
+    cv2.imwrite(full_path + "\rotateBy90_img1.jpg",rotimg)
     # cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -210,7 +215,7 @@ def findAndDrawContours(img):
     cv2.imshow('Canny Edges', canny)
     cv2.drawContours(img, contours, -1, (0,255,0), 3)
     cv2.imshow('Contours',img)
-    cv2.imwrite("ContoursOnImg1.jpg", img)
+    cv2.imwrite(full_path + "\ContoursOnImg1a.jpg", img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -224,19 +229,25 @@ def TemplateMatching(img, template):
     for pt in zip(*loc[::-1]):
         cv2.rectangle(img, pt, (pt[0] + w, pt[1] + h), (0,255,255), 2)
     cv2.imshow('Matched with Template',img)
-    cv2.imwrite('MatchedTemplate.jpg',img)
+    cv2.imwrite(full_path + '\MatchedTemplate.jpg',img)
 
 
 
 if __name__ == "__main__":
-    pathImg1 = "D:\MS_Related\ASU\CSE598_Robotics\RobotPlayingChess\CameraAndVision\img1.jpg"
-    pathResizedImg = "D:\MS_Related\ASU\CSE598_Robotics\RobotPlayingChess\resizedBy4_img1.jpg"
-    img_separateWin = "separate_windows1.jpg"
+    
+    # absolute_path = os.path.dirname(__file__)
+    # relative_path = "CameraAndVision\Images"
+    # full_path = os.path.join(absolute_path,relative_path)
 
+    # pathImg1 = "D:\MS_Related\ASU\CSE598_Robotics\RobotPlayingChess\CameraAndVision\Images\img1.jpg"
+    pathResizedImg = "D:\MS_Related\ASU\CSE598_Robotics\RobotPlayingChess\Images\resizedBy4_img1.jpg"
+    img_separateWin = full_path + "\separate_windows1.jpg"
+    pathImg1 = full_path + "\img1.jpg"
+    path_template = full_path + "\\templates.jpg"
     img1 = cv2.imread(pathImg1)
-    img_template = cv2.imread('templates.jpg',0)
+    img_template = cv2.imread( path_template,0)
     # ResizeImage(img1)
     # RotateImage(img1)
     # ReturnColorHist(img1)
-    # findAndDrawContours(cv2.imread(img_separateWin))
-    TemplateMatching(cv2.imread('template_matching.jpg',1) , img_template)
+    findAndDrawContours(cv2.imread(img_separateWin))
+    # TemplateMatching(cv2.imread('.\Images\template_matching.jpg',1) , img_template)
