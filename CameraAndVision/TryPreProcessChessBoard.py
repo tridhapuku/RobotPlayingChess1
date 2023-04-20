@@ -53,6 +53,15 @@ def CropAllImagesAndSave(path):
         cropped_img = img[Crop_hStart:Crop_hEnd,Crop_wStart:Crop_wEnd]
         cv2.imwrite(OutputImagePath + "\Cropped" + str(i) + ImgPostfix , cropped_img)
 
+def DetectDisplacement(img1, img2):
+    gray1 = cv2.cvtColor(img1,cv2.COLOR_BGR2GRAY)
+    gray2 = cv2.cvtColor(img2,cv2.COLOR_BGR2GRAY)
+    diff1 = gray2 - gray1
+    diff2 = img2 - img1
+    cv2.imshow("diff1", diff1)
+    cv2.imshow("diff2", diff2)
+    cv2.destroyAllWindows()
+
 if __name__ == "__main__":
     
     # absolute_path = os.path.dirname(__file__)
@@ -70,8 +79,13 @@ if __name__ == "__main__":
     # GetImageProp(img1)
     # CropImageUsingSlicing(img1)
     # CropAllImagesAndSave(pathFolder)
-    DetectChessCorners(CroppedImg11)
-    
+    # DetectChessCorners(CroppedImg11)
+
+    Cropped1 = OutputImagePath + "\Cropped1.png"
+    Cropped2 = OutputImagePath + "\Cropped2.png"
+    Cropped1,Cropped2 = cv2.imread(Cropped1) , cv2.imread(Cropped2)
+    DetectDisplacement(Cropped1, Cropped2)
+
     # cv2.show()
     # DetectChessCorners(img1)
     # img_template = cv2.imread( path_template,0)
