@@ -8,13 +8,17 @@ absolute_path = os.path.dirname(__file__)
 relative_path = "Images\captured_imagaes"
 full_path = os.path.join(absolute_path,relative_path)
 OutputImagePath = os.path.join(absolute_path, "Images\Output")
+full_pathNew = os.path.join(absolute_path,"Images\\new-setup-iamges")
 Crop_hStart , Crop_hEnd = 210 , 420
 Crop_wStart , Crop_wEnd = 240 , 450
+
+Crop_hStartF , Crop_hEndF = 0, 0
+Crop_wStartF, Crop_wEndF = 0, 0
 
 def DetectChessCorners(img):
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     cv2.imshow('GrayImg',gray)
-    # cv2.imwrite(OutputImagePath + "\Gray1.png", gray)
+    cv2.imwrite(OutputImagePath + "\GrayEmpty1.png", gray)
 
     ret, corners = cv2.findChessboardCorners(gray,(7,7) , None)
     print("Finding chess board corners done")
@@ -25,7 +29,7 @@ def DetectChessCorners(img):
         img = cv2.drawChessboardCorners(img, (7,7) , corners, ret)
         cv2.imshow('Chessboard', img)
         # cv2.waitKey(0)
-        cv2.imwrite(OutputImagePath + "\ChessCorners6_8By8.png" , img)
+        cv2.imwrite(OutputImagePath + "\ChessCorners1_7By78.png" , img)
     else:
         print("Chessboard Corners Not found!")
 
@@ -36,6 +40,13 @@ def GetImageProp(img):
     print(img.shape)
     print(img.size) #total no of pixels
     print(type(img))
+
+def ImageRegions(img):
+    print(img.shape)
+    #convert to gray scale --
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+    
 
 def CropImageUsingSlicing(img):
     cropped_img = img[Crop_hStart:Crop_hEnd,Crop_wStart:Crop_wEnd]
@@ -62,6 +73,9 @@ def DetectDisplacement(img1, img2):
     cv2.imshow("diff2", diff2)
     cv2.destroyAllWindows()
 
+
+
+
 if __name__ == "__main__":
     
     # absolute_path = os.path.dirname(__file__)
@@ -73,18 +87,19 @@ if __name__ == "__main__":
     pathImg1 = full_path + "\chessboard_state_11.png"
     pathFolder = "D:\MS_Related\ASU\CSE598_Robotics\RobotPlayingChess\CameraAndVision\Images\captured_imagaes"
     
-    Cropped11 = OutputImagePath + "\Cropped6.png"
+    # Cropped11 = OutputImagePath + "\Cropped6.png" #FinalSetCropped1.jpg
+    Cropped11 = full_path + "\EmptyCropped1.jpg"
     CroppedImg11 = cv2.imread(Cropped11)
-    # img1 = cv2.imread(pathImg1)
-    # GetImageProp(img1)
+    img1 = cv2.imread(pathImg1)   
+    GetImageProp(img1)
     # CropImageUsingSlicing(img1)
     # CropAllImagesAndSave(pathFolder)
-    # DetectChessCorners(CroppedImg11)
+    DetectChessCorners(CroppedImg11)
 
-    Cropped1 = OutputImagePath + "\Cropped1.png"
-    Cropped2 = OutputImagePath + "\Cropped2.png"
-    Cropped1,Cropped2 = cv2.imread(Cropped1) , cv2.imread(Cropped2)
-    DetectDisplacement(Cropped1, Cropped2)
+    # Cropped1 = OutputImagePath + "\Cropped1.png"
+    # Cropped2 = OutputImagePath + "\Cropped2.png"
+    # Cropped1,Cropped2 = cv2.imread(Cropped1) , cv2.imread(Cropped2)
+    # DetectDisplacement(Cropped1, Cropped2)
 
     # cv2.show()
     # DetectChessCorners(img1)

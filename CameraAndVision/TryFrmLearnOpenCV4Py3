@@ -1,0 +1,39 @@
+import cv2 as cv2
+from matplotlib import pyplot as plt
+import numpy as np
+import os
+
+
+#Try Chapter3
+def TryContourDetection():
+    #create an image
+    img = np.zeros((200,200) , dtype=np.uint8)
+
+    #place white square in the center 
+    img[50:150,50:150] = 255
+    cv2.imshow("Img1" ,img)
+
+    #threshold the image
+    ret, threshold = cv2.threshold(img, 127,255,0)
+    cv2.imshow("Threshold1" ,threshold)
+    #findContours - inputs - img, hierarchy type, contour approx method
+        #cv2.RETR_EXTERNAL --objects appera on plain bckgnd
+        #cv2.RETR_TREE -- retrieve entire hierarchy 
+    contours, hierarchy = cv2.findContours(threshold , cv2.RETR_TREE , 
+                                           cv2.CHAIN_APPROX_SIMPLE)
+    
+    print(type(contours)) #type is tuple
+    print(contours) #tuple of array of rectangle dimensions 
+    #convert to color image
+    color = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+
+    #draw green contours on each of the contours/shapes found
+    img = cv2.drawContours(color, contours, -1, (0,255,0), 2)
+    cv2.imshow("contours", color)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+
+
+
+if __name__ == "__main__":
+    TryContourDetection()

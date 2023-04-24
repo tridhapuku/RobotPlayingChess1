@@ -19,7 +19,7 @@ def TakeImageUsingOpenCV():
     ret, frame = cap.read()
 
     # save the captured image
-    cv2.imwrite(full_path + "\captured_image2.jpg", frame)
+    cv2.imwrite(full_path + "\captured_image2.png", frame)
 
     # release the camera
     cap.release()
