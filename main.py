@@ -2,16 +2,45 @@
 import chess
 import chess.engine
 import CameraAndVision.TryPreProcessFinalSet as ProcessImage
-
+import CameraAndVision.vision_api as Vision
 
 # %run ".\ChessEngine\TrySimpleCall"
 # TestCallFromAnotherFile()
 
+
+
+def GetUciMove(listOfTuples1, listOfTuples2):
+    result_uci = ""
+    countOfPiecesMoved = 0
+    listOfPiecesMoved = []
+    #loop through each item
+    for i  in range(len(listOfTuples1)):
+        #if firstloc is full & secondloc is empty --> this piece moved -- prev_uci 
+        #if firstloc is empty & secondloc is full --> this piece destinatio -- next_uci
+        locationInFirstBoard = listOfTuples1[i][1]
+        locationIn2ndBoard = listOfTuples2[i][1]
+
+        if (locationInFirstBoard in ListOfPieces) and locationIn2ndBoard == "*":
+            listOfPiecesMoved.append(locationInFirstBoard)
+            countOfPiecesMoved = countOfPiecesMoved + 1
+            prev_uci = listOfTuples1[i][0]
+        elif locationInFirstBoard == "*" and (locationIn2ndBoard in ListOfPieces):
+            next_uci = listOfTuples1[i][0]
+        else:
+            continue
+
+    if countOfPiecesMoved > 1:
+        print("From Past Move to Present Move --multiple moves detected")
+        print(listOfPiecesMoved)
+    else:
+        result_uci = prev_uci + next_uci
+
+    return result_uci
+
+listOfTuples = [('a1', 'R'), ('a2', 'P'), ('a3', '*'), ('a4', '*'), ('a5', '*'), ('a6', '*'), ('a7', 'p'), ('a8', 'r'), ('b1', 'N'), ('b2', 'P'), ('b3', '*'), ('b4', '*'), ('b5', '*'), ('b6', '*'), ('b7', 'p'), ('b8', 'n'), ('c1', 'B'), ('c2', 'P'), ('c3', '*'), ('c4', '*'), ('c5', '*'), ('c6', '*'), ('c7', 'p'), ('c8', 'b'), ('d1', 'K'), ('d2', 'P'), ('d3', '*'), ('d4', '*'), ('d5', '*'), ('d6', '*'), ('d7', 'p'), ('d8', 'k'), ('e1', 'Q'), ('e2', 'P'), ('e3', '*'), ('e4', '*'), ('e5', '*'), ('e6', '*'), ('e7', 'p'), ('e8', 'q'), ('f1', 'B'), ('f2', 'P'), ('f3', '*'), ('f4', '*'), ('f5', '*'), ('f6', '*'), ('f7', 'p'), ('f8', 'b'), ('g1', 'N'), ('g2', 'P'), ('g3', '*'), ('g4', '*'), ('g5', '*'), ('g6', '*'), ('g7', 'p'), ('g8', 'n'), ('h1', 'R'), ('h2', 'P'), ('h3', '*'), ('h4', '*'), ('h5', '*'), ('h6', '*'), ('h7', 'p'), ('h8', 'r')]
+
 PrevListOfTuples = []
-PresentListOfTuples = []
-
-
-
+PresentListOfTuples = listOfTuples
 
 #Human plays the move --> replies yes after playing on command-prompt
 if __name__ == "__main__":
@@ -25,16 +54,17 @@ if __name__ == "__main__":
         
         if board.turn == chess.WHITE:
             while True:
-                # humanPlayed = input("Human Turn & press y ")    
+                humanPlayed = input("Human Turn & press y ")    
                 # move_str = "e2e4"  #From camera
-                move_str = input("Human Turn & enter string ex- e2e4:")
-                ProcessImage.CaptureImage(count)
-                PresentListOfTuples = ProcessImage.ReturnTuple()
-
-
-                print("Processing Human Played Movement--")
-                print("Dividing into 64 blocks")
-                print("Get FEN or displacement part")
+                # move_str = input("Human Turn & enter string ex- e2e4:")
+                # ProcessImage.CaptureImage(count)
+                PrevListOfTuples = PresentListOfTuples
+                PresentListOfTuples = Vision.PreProcessImage(count)
+                move_str = GetUciMove(PrevListOfTuples , PresentListOfTuples)
+                print("Move by CV = {}".format(move_str))
+                # print("Processing Human Played Movement--")
+                # print("Dividing into 64 blocks")
+                # print("Get FEN or displacement part")
                 move = chess.Move.from_uci(move_str)
                 # Check if the move is legal
                 if move in board.legal_moves:
@@ -46,12 +76,17 @@ if __name__ == "__main__":
             print("Invoke Stockfish ")
             result = engine.play(board,chess.engine.Limit(time=2.0))
             move = result.move
+            PrevListOfTuples = PresentListOfTuples
+            PresentListOfTuples = Vision.PreProcessImage(count)
+            move_str1 = GetUciMove(PrevListOfTuples , PresentListOfTuples)
+            print("move by chess:{}".format(move))
+            print("move by vision:{}".format(move_str1))
             print("Output from engine is:")                
             print("Best move:", move)
             print("Robot Doing Motion")
             print("Robot Done")
             print("Take Image for played move ") 
-
+            
 
                 
         board.push(move)

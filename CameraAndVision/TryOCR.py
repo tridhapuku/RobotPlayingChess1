@@ -15,7 +15,7 @@ full_pathNewSet = os.path.join(absolute_path,relative_path)
 full_pathImages = os.path.join(absolute_path, "Images")
 OCRTrialPath = OutputImageNew + "\\ForOCRTrial"
 
-NameOfImg = "CompletePic2.JPG"
+NameOfImg = "CompletePic.JPG"
 def ReadImage():
     # pathImg = OutputImageNew + "\pawnSmall_2.PNG" 
     pathImg = OCRTrialPath + "\\" + NameOfImg

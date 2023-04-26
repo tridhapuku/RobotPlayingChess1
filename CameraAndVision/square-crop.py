@@ -1,6 +1,5 @@
 import cv2
-# import matplotlib.pyplot as plt
-
+import numpy as np
 
 def crop_image(filename):
     
@@ -12,7 +11,7 @@ def crop_image(filename):
     return img_crop
 
 #reference image
-img_crop = crop_image("CameraAndVision\crop-test9.jpg")
+img_crop = crop_image("CameraAndVision\data\\testing_images\crop-test9.jpg")
 
 #create this folder beforehand         
 test_path = "CameraAndVision\\data\\split_images\\" 
@@ -28,8 +27,13 @@ img_crop2 = img_crop.copy()
 
 # Find the chessboard corners
 found, corners = cv2.findChessboardCorners(thresh, pattern_size, cv2.CALIB_CB_FAST_CHECK)
-cv2.imshow("cropped", img_crop)
-cv2.imshow("thresh", thresh)
+# cv2.imshow("cropped", img_crop)
+# cv2.imshow("thresh", thresh)
+# print(corners)
+# print(type(corners))
+# corners = np.uint16(np.around(corners))
+# print((corners))
+
 
 
 if not found:
@@ -91,7 +95,7 @@ for j in range(8,0,-1):
             
 # testing for random image using hardcoded coordinates
 
-test_image = crop_image("CameraAndVision\move5.jpg")
+test_image = crop_image("CameraAndVision\data\\testing_images\move0.jpg")
 
 start_index_array = [0,7,14,21,28,35,42]
 for j in range(8,0,-1):
