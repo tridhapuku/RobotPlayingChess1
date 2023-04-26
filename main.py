@@ -1,12 +1,13 @@
 #Import All Directories
 import chess
 import chess.engine
-import CameraAndVision.TryPreProcessFinalSet as ProcessImage
+# import CameraAndVision.TryPreProcessFinalSet as ProcessImage
 import CameraAndVision.vision_api as Vision
 
 # %run ".\ChessEngine\TrySimpleCall"
 # TestCallFromAnotherFile()
 
+ListOfPieces = ['p', 'q', 'r', 'n', 'b','k','P', 'Q','R','N', 'B','K']
 
 
 def GetUciMove(listOfTuples1, listOfTuples2):
@@ -41,20 +42,22 @@ listOfTuples = [('a1', 'R'), ('a2', 'P'), ('a3', '*'), ('a4', '*'), ('a5', '*'),
 
 PrevListOfTuples = []
 PresentListOfTuples = listOfTuples
-
+PathForCHessEngine = r"C:\Users\soura\Downloads\stockfish_15.1_win_x64_avx2\stockfish_15.1_win_x64_avx2\stockfish-windows-2022-x86-64-avx2.exe"
 #Human plays the move --> replies yes after playing on command-prompt
 if __name__ == "__main__":
     # TryOCR()
     # board = chess.Board()
     # engine= chess.engine.SimpleEngine.popen_uci(r"C:\Users\abhid\Downloads\stockfish_15.1_win_x64_avx2\stockfish-windows-2022-x86-64-avx2.exe")
     board = chess.Board()
-    engine= chess.engine.SimpleEngine.popen_uci(r"C:\Users\abhid\Downloads\stockfish_15.1_win_x64_avx2\stockfish-windows-2022-x86-64-avx2.exe")
+    # engine= chess.engine.SimpleEngine.popen_uci(r"C:\Users\abhid\Downloads\stockfish_15.1_win_x64_avx2\stockfish-windows-2022-x86-64-avx2.exe")
+
+    engine= chess.engine.SimpleEngine.popen_uci(PathForCHessEngine)
     count = 0
     while not board.is_game_over():
         
         if board.turn == chess.WHITE:
             while True:
-                humanPlayed = input("Human Turn & press y ")    
+                humanPlayed = input("After Human moves, Press any key to coninue: ")    
                 # move_str = "e2e4"  #From camera
                 # move_str = input("Human Turn & enter string ex- e2e4:")
                 # ProcessImage.CaptureImage(count)
@@ -68,6 +71,7 @@ if __name__ == "__main__":
                 move = chess.Move.from_uci(move_str)
                 # Check if the move is legal
                 if move in board.legal_moves:
+                    count = count + 1
                     break
                 else:
                     print("Illegal move! Try again.")
@@ -76,16 +80,21 @@ if __name__ == "__main__":
             print("Invoke Stockfish ")
             result = engine.play(board,chess.engine.Limit(time=2.0))
             move = result.move
+            print(board)
+            print("move by Chess Engine:{}".format(move))
+            robot_played = input("After Robot has moved, press any key to continue:")
+
             PrevListOfTuples = PresentListOfTuples
             PresentListOfTuples = Vision.PreProcessImage(count)
             move_str1 = GetUciMove(PrevListOfTuples , PresentListOfTuples)
-            print("move by chess:{}".format(move))
+            print("move by Chess Engine:{}".format(move))
             print("move by vision:{}".format(move_str1))
-            print("Output from engine is:")                
-            print("Best move:", move)
-            print("Robot Doing Motion")
-            print("Robot Done")
-            print("Take Image for played move ") 
+            #To Do : Add code for illegal moves 
+            #check for engine & arm --same 
+            count = count + 1
+            # print("Robot Doing Motion")
+            # print("Robot Done")
+            # print("Take Image for played move ") 
             
 
                 

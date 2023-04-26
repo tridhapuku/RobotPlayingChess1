@@ -102,8 +102,8 @@ def get_detected_tuples():
 
     split_images_path = 'CameraAndVision\data\split_images'
     file_list = glob.glob(split_images_path+'\*')
-    print(file_list[0], len(file_list))
-    print(file_list[0].split('\\')[3])
+    # print(file_list[0], len(file_list))
+    # print(file_list[0].split('\\')[3])
 
     detected_tuple = []
     for f in file_list:
@@ -130,9 +130,10 @@ def TakeImageUsingOpenCV(count):
    
     print("Taking image from camera...")
     # select the camera source
-    camera_id = 1  # change the value to select the desired camera -- logitech
-    cap = cv2.VideoCapture(camera_id)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) # this is the magic!
 
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
     # capture an image
     ret, frame = cap.read()
 
@@ -210,13 +211,13 @@ def SplitImage(image_path):
                     corner_x, corner_y = int(corners[start_index+i][0][0]), int(corners[start_index+i][0][1])
                     square_crop = test_image[corner_y:corner_y+hh, corner_x:corner_x+ww] #a8
                     cv2.imwrite(test_path+chr(col)+str(j)+".jpg", square_crop)
-                    print("saving", chr(col)+str(j)+".jpg")
+                    # print("saving", chr(col)+str(j)+".jpg")
                 else:
 
                     corner_x, corner_y = int(corners[start_index+i-1][0][0]), int(corners[start_index+i-1][0][1])
                     square_crop = test_image[corner_y:corner_y+hh, corner_x-ww:corner_x] #a1
                     cv2.imwrite(test_path+chr(col)+str(j)+".jpg", square_crop)
-                    print("saving", chr(col)+str(j)+".jpg")
+                    # print("saving", chr(col)+str(j)+".jpg")
                 col+=1
                 
         else:     # for 8th row
@@ -227,13 +228,13 @@ def SplitImage(image_path):
                     corner_x, corner_y = int(corners[start_index+i][0][0]), int(corners[start_index+i][0][1])
                     square_crop = test_image[corner_y-hh:corner_y, corner_x:corner_x+ww] #a8
                     cv2.imwrite(test_path+chr(col)+str(j)+".jpg", square_crop)
-                    print("saving", chr(col)+str(j)+".jpg")
+                    # print("saving", chr(col)+str(j)+".jpg")
                 else:
 
                     corner_x, corner_y = int(corners[start_index+i-1][0][0]), int(corners[start_index+i-1][0][1])
                     square_crop = test_image[corner_y-hh:corner_y, corner_x-ww:corner_x] #a1
                     cv2.imwrite(test_path+chr(col)+str(j)+".jpg", square_crop)
-                    print("saving", chr(col)+str(j)+".jpg")
+                    # print("saving", chr(col)+str(j)+".jpg")
                 col+=1
 
 def PreProcessImage(count):
