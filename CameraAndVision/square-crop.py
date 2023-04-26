@@ -1,33 +1,36 @@
 import cv2
+# import matplotlib.pyplot as plt
+
 
 def crop_image(filename):
     
     # Load image
     img = cv2.imread(filename)
-
     # crop to chessboard
-    # img_crop = gray[119:771, 556:1203]
     img_crop = img[14:960, 357:1300]
     
     return img_crop
 
-img_crop = crop_image("crop-test9.jpg")
+#reference image
+img_crop = crop_image("CameraAndVision\crop-test9.jpg")
+
+#create this folder beforehand         
+test_path = "CameraAndVision\\data\\split_images\\" 
 
 # Convert to grayscale
 gray = cv2.cvtColor(img_crop, cv2.COLOR_BGR2GRAY)
-
-
 pattern_size = (7, 7)
 
 
 ret, thresh = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
 
 img_crop2 = img_crop.copy()
+
 # Find the chessboard corners
 found, corners = cv2.findChessboardCorners(thresh, pattern_size, cv2.CALIB_CB_FAST_CHECK)
 cv2.imshow("cropped", img_crop)
 cv2.imshow("thresh", thresh)
-# cv2.imshow("resized", resized_img)
+
 
 if not found:
     print('Chessboard corners not found')
@@ -37,7 +40,7 @@ else:
     cv2.drawChessboardCorners(img_crop2, pattern_size, corners, found)
 
     # Display the input image with the corners detected
-    cv2.imshow('Chessboard Corners', img_crop2)
+    # cv2.imshow('Chessboard Corners', img_crop2)
     
 cv2.waitKey(0)
 cv2.destroyAllWindows()
@@ -45,7 +48,7 @@ cv2.destroyAllWindows()
 
     #a1
 a8 = img_crop2.copy()
-
+hh, ww = 106, 106
 start_index_array = [0,7,14,21,28,35,42]
 for j in range(8,0,-1):
     col = 97
@@ -84,12 +87,11 @@ for j in range(8,0,-1):
                 print("saving", chr(col)+str(j)+".jpg")
             col+=1
             
-#create this folder beforehand         
-test_path = "./test_image/"           
+          
             
 # testing for random image using hardcoded coordinates
 
-test_image = crop_image("crop-test1.jpg")
+test_image = crop_image("CameraAndVision\move5.jpg")
 
 start_index_array = [0,7,14,21,28,35,42]
 for j in range(8,0,-1):
