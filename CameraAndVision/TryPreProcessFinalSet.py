@@ -2,6 +2,7 @@ import cv2 as cv2
 from matplotlib import pyplot as plt
 import numpy as np
 import os
+import time as time
 
 
 absolute_path = os.path.dirname(__file__)
@@ -283,21 +284,32 @@ def GetUciMove(listOfTuples1, listOfTuples2):
     result_uci = ""
     countOfPiecesMoved = 0
     listOfPiecesMoved = []
+    prev_uci , next_uci = "" , ""
+    piece_moved = ""
+
+    print("Testing sleep - 3secs")
+    time.sleep(3)
     #loop through each item
     for i  in range(len(listOfTuples1)):
         #if firstloc is full & secondloc is empty --> this piece moved -- prev_uci 
         #if firstloc is empty & secondloc is full --> this piece destinatio -- next_uci
-        locationInFirstBoard = listOfTuples1[i][1]
-        locationIn2ndBoard = listOfTuples2[i][1]
+        pieceInFirstBoard = listOfTuples1[i][1]
+        pieceIn2ndBoard = listOfTuples2[i][1]
 
-        if (locationInFirstBoard in ListOfPieces) and locationIn2ndBoard == "*":
-            listOfPiecesMoved.append(locationInFirstBoard)
+        if (pieceInFirstBoard in ListOfPieces) and pieceIn2ndBoard == "*":
+            listOfPiecesMoved.append(pieceInFirstBoard)
             countOfPiecesMoved = countOfPiecesMoved + 1
             prev_uci = listOfTuples1[i][0]
-        elif locationInFirstBoard == "*" and (locationIn2ndBoard in ListOfPieces):
-            next_uci = listOfTuples1[i][0]
+            piece_moved = listOfTuples1[i][1]
+            # break
         else:
             continue
+
+    #iterate through all locations in p2 & get its next location
+    for i  in range(len(listOfTuples2)):
+        if piece_moved == listOfTuples2[i][1]:
+            next_uci = listOfTuples2[i][0]
+
 
     if countOfPiecesMoved > 1:
         print("From Past Move to Present Move --multiple moves detected")

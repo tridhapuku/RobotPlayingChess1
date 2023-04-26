@@ -3,6 +3,7 @@ import chess
 import chess.engine
 # import CameraAndVision.TryPreProcessFinalSet as ProcessImage
 import CameraAndVision.vision_api as Vision
+import time as time
 
 # %run ".\ChessEngine\TrySimpleCall"
 # TestCallFromAnotherFile()
@@ -14,19 +15,23 @@ def GetUciMove(listOfTuples1, listOfTuples2):
     result_uci = ""
     countOfPiecesMoved = 0
     listOfPiecesMoved = []
+    prev_uci , next_uci = ""
     #loop through each item
     for i  in range(len(listOfTuples1)):
         #if firstloc is full & secondloc is empty --> this piece moved -- prev_uci 
         #if firstloc is empty & secondloc is full --> this piece destinatio -- next_uci
-        locationInFirstBoard = listOfTuples1[i][1]
-        locationIn2ndBoard = listOfTuples2[i][1]
+        pieceInFirstBoard = listOfTuples1[i][1]
+        pieceIn2ndBoard = listOfTuples2[i][1]
 
-        if (locationInFirstBoard in ListOfPieces) and locationIn2ndBoard == "*":
-            listOfPiecesMoved.append(locationInFirstBoard)
+        if (pieceInFirstBoard in ListOfPieces) and pieceIn2ndBoard == "*":
+            listOfPiecesMoved.append(pieceInFirstBoard)
             countOfPiecesMoved = countOfPiecesMoved + 1
             prev_uci = listOfTuples1[i][0]
-        elif locationInFirstBoard == "*" and (locationIn2ndBoard in ListOfPieces):
+        elif pieceInFirstBoard == "*" and (pieceIn2ndBoard in ListOfPieces):
             next_uci = listOfTuples1[i][0]
+        elif (pieceInFirstBoard in ListOfPieces) and  (pieceIn2ndBoard in ListOfPieces):
+            if pieceInFirstBoard != pieceIn2ndBoard:
+                print("Cancellation detected -- Not supported")
         else:
             continue
 
@@ -61,40 +66,50 @@ if __name__ == "__main__":
                 # move_str = "e2e4"  #From camera
                 # move_str = input("Human Turn & enter string ex- e2e4:")
                 # ProcessImage.CaptureImage(count)
-                PrevListOfTuples = PresentListOfTuples
-                PresentListOfTuples = Vision.PreProcessImage(count)
-                move_str = GetUciMove(PrevListOfTuples , PresentListOfTuples)
-                print("Move by CV = {}".format(move_str))
+                
+                NextListOfTuples = Vision.PreProcessImage(count)
+                move_str = GetUciMove(PresentListOfTuples , NextListOfTuples)
+                print("Move by Human Detected = {}".format(move_str))
                 # print("Processing Human Played Movement--")
                 # print("Dividing into 64 blocks")
                 # print("Get FEN or displacement part")
                 move = chess.Move.from_uci(move_str)
                 # Check if the move is legal
                 if move in board.legal_moves:
+                    PrevListOfTuples = PresentListOfTuples
+                    PresentListOfTuples = NextListOfTuples
                     count = count + 1
                     break
                 else:
-                    print("Illegal move! Try again.")
+                    print("Illegal move by Human! Try again.")
         else:
             #Robot Arm Turn
             print("Invoke Stockfish ")
             result = engine.play(board,chess.engine.Limit(time=2.0))
             move = result.move
             print(board)
-            print("move by Chess Engine:{}".format(move))
-            robot_played = input("After Robot has moved, press any key to continue:")
+            while True:
+                print("move by Chess Engine:{}".format(move))
+                print("Waiting for robot to finish movement {} ...".format(move))
+                time.sleep(3)
+                robot_played = input("After Robot has moved, press any key to continue:")
 
-            PrevListOfTuples = PresentListOfTuples
-            PresentListOfTuples = Vision.PreProcessImage(count)
-            move_str1 = GetUciMove(PrevListOfTuples , PresentListOfTuples)
-            print("move by Chess Engine:{}".format(move))
-            print("move by vision:{}".format(move_str1))
-            #To Do : Add code for illegal moves 
-            #check for engine & arm --same 
-            count = count + 1
-            # print("Robot Doing Motion")
-            # print("Robot Done")
-            # print("Take Image for played move ") 
+                NextListOfTuples = Vision.PreProcessImage(count)
+                move_str1 = GetUciMove(PresentListOfTuples , NextListOfTuples)
+                print("move by Chess Engine:{}".format(move))
+                print("move by vision:{}".format(move_str1))
+                #To Do : Add code for illegal moves 
+                #check for engine & arm --same 
+                # print("Robot Doing Motion")
+                # print("Robot Done")
+                # print("Take Image for played move ") 
+                if move_str1 in board.legal_moves:
+                    PrevListOfTuples = PresentListOfTuples
+                    PresentListOfTuples = NextListOfTuples
+                    count = count + 1
+                    break
+                else:
+                    print("Illegal move by Robot! Try again.")
             
 
                 
